@@ -27,3 +27,31 @@ python scripts/download_hg002_giab.py --outdir data
 ```
 
 This will create a `data` directory containing the HG002 benchmark files required for evaluation.
+
+
+### Downloading HG002 data
+
+Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
+
+```bash
+python scripts/download_hg002_giab.py --outdir data
+```
+
+This will create a `data` directory containing the HG002 benchmark files required for evaluation.
+
+### Setting up the conda environment
+
+Create the Python environment and install the required tools using `environment.yml`:
+
+```bash
+conda env create -f environment.yml
+conda activate seqc2
+```
+
+The environment installs both **DeepVariant** and **GATK** from Bioconda.
+
+Alternatively, run the helper script:
+
+```bash
+./scripts/setup_conda_env.sh
+```
