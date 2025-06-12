@@ -17,3 +17,13 @@ This project aims to reproduce and evaluate variant calling pipelines (e.g., Dee
 
 ## Data Sources:
 - GIAB: [ftp://ftp-trace.ncbi.nlm.nih.gov/giab/](ftp://ftp-trace.ncbi.nlm.nih.gov/giab/)
+
+### Downloading HG002 data
+
+Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
+
+```bash
+python scripts/download_hg002_giab.py --outdir data
+```
+
+This will create a `data` directory containing the HG002 benchmark files required for evaluation.
