@@ -9,6 +9,7 @@ This project aims to reproduce and evaluate variant calling pipelines (e.g., Dee
 2. Set up Python conda environment
 3. Install variant calling tools (DeepVariant, GATK)
 4. Run evaluation pipeline
+5. Visualize evaluation results
 
 ## Environment:
 - Python 3.10
@@ -17,3 +18,58 @@ This project aims to reproduce and evaluate variant calling pipelines (e.g., Dee
 
 ## Data Sources:
 - GIAB: [ftp://ftp-trace.ncbi.nlm.nih.gov/giab/](ftp://ftp-trace.ncbi.nlm.nih.gov/giab/)
+
+### Downloading HG002 data
+
+Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
+
+```bash
+python scripts/download_hg002_giab.py --outdir data
+```
+
+This will create a `data` directory containing the HG002 benchmark files required for evaluation.
+
+### Setting up the conda environment
+
+Create the Python environment and install the required tools using `environment.yml`:
+
+```bash
+conda env create -f environment.yml
+conda activate seqc2
+```
+
+The environment installs **DeepVariant**, **GATK**, and **hap.py** from Bioconda.
+
+Alternatively, run the helper script:
+
+```bash
+./scripts/setup_conda_env.sh
+```
+
+### Running the evaluation pipeline
+
+After downloading the HG002 truth data and creating the environment,
+run the pipeline to generate variant calls with DeepVariant and compare
+them to the GIAB benchmark set using `hap.py`:
+
+```bash
+python scripts/run_evaluation_pipeline.py \
+  --bam path/to/aligned.bam \
+  --ref path/to/reference.fasta \
+  --outdir results
+```
+
+This will produce a `results` directory containing the DeepVariant VCF and
+evaluation metrics from `hap.py`.
+
+### Visualizing the evaluation
+
+The hap.py output includes a `happy.summary.csv` file with precision,
+recall and F1-score metrics. Use the `visualize_evaluations.py` script
+to generate a simple bar plot:
+
+```bash
+python scripts/visualize_evaluations.py results/happy -o metrics.png
+```
+
+Open `metrics.png` to view the plotted scores.

@@ -1,0 +1,15 @@
+name: seqc2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - gatk4
+  - deepvariant
+  - hap.py
+  - samtools
+  - bcftools
+  - pandas
+  - matplotlib
