@@ -46,6 +46,9 @@ def run(cmd: List[str]) -> None:
 
 def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
     """Run DeepVariant and return the path to the output VCF."""
+    for path, desc in [(bam, "input BAM/CRAM"), (ref, "reference FASTA")]:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Missing {desc}: {path}")
     if shutil.which("run_deepvariant") is None:
         raise FileNotFoundError(
             "DeepVariant executable 'run_deepvariant' not found in PATH. "
@@ -65,6 +68,14 @@ def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
 
 def run_happy(truth_vcf: str, truth_bed: str, query_vcf: str, ref: str, out_dir: str) -> None:
     """Compare query VCF against truth using hap.py."""
+    for path, desc in [
+        (truth_vcf, "truth VCF"),
+        (truth_bed, "truth BED"),
+        (query_vcf, "query VCF"),
+        (ref, "reference FASTA"),
+    ]:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Missing {desc}: {path}")
     if shutil.which("hap.py") is None:
         raise FileNotFoundError(
             "Evaluation tool 'hap.py' not found in PATH. "
@@ -92,10 +103,24 @@ def main() -> None:
     parser.add_argument("-o", "--outdir", default="results", help="Output directory")
     args = parser.parse_args()
 
+    for path, desc in [
+        (args.bam, "BAM/CRAM file"),
+        (args.ref, "reference FASTA"),
+        (args.truth_vcf, "benchmark VCF"),
+        (args.truth_bed, "benchmark BED"),
+    ]:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Missing {desc}: {path}")
+
+    for exe in ["run_deepvariant", "hap.py"]:
+        if shutil.which(exe) is None:
+            raise SystemExit(f"Required executable '{exe}' not found in PATH")
+
     os.makedirs(args.outdir, exist_ok=True)
     check_required_tools()
     query_vcf = run_deepvariant(args.bam, args.ref, args.outdir)
     run_happy(args.truth_vcf, args.truth_bed, query_vcf, args.ref, args.outdir)
+  
 
 if __name__ == "__main__":
     main()
