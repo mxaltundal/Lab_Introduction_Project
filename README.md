@@ -28,17 +28,6 @@ python scripts/download_hg002_giab.py --outdir data
 
 This will create a `data` directory containing the HG002 benchmark files required for evaluation.
 
-
-### Downloading HG002 data
-
-Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
-
-```bash
-python scripts/download_hg002_giab.py --outdir data
-```
-
-This will create a `data` directory containing the HG002 benchmark files required for evaluation.
-
 ### Setting up the conda environment
 
 Create the Python environment and install the required tools using `environment.yml`:
@@ -65,8 +54,15 @@ python scripts/run_evaluation_pipeline.py \
 
 This will produce a `results` directory containing the DeepVariant VCF and
 evaluation metrics from `hap.py`.
-environment.yml
+### Visualizing hap.py evaluation results
 
+After running the evaluation pipeline, you can plot the `hap.py` metrics using:
+
+```bash
+python scripts/visualize_evaluations.py results/happy -o evaluation_metrics.png
+```
+
+This creates an `evaluation_metrics.png` bar chart summarizing SNP and INDEL recall, precision, and F1 score.
 
 Alternatively, run the helper script:
 
