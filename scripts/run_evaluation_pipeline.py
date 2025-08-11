@@ -15,6 +15,7 @@ Example::
 import argparse
 import os
 import subprocess
+import shutil
 from typing import List
 
 def run(cmd: List[str]) -> None:
@@ -24,6 +25,11 @@ def run(cmd: List[str]) -> None:
 
 def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
     """Run DeepVariant and return the path to the output VCF."""
+    if shutil.which("run_deepvariant") is None:
+        raise FileNotFoundError(
+            "DeepVariant executable 'run_deepvariant' not found in PATH. "
+            "Please install DeepVariant or add it to PATH."
+        )
     vcf_path = os.path.join(out_dir, "deepvariant.vcf.gz")
     cmd = [
         "run_deepvariant",
@@ -38,6 +44,11 @@ def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
 
 def run_happy(truth_vcf: str, truth_bed: str, query_vcf: str, ref: str, out_dir: str) -> None:
     """Compare query VCF against truth using hap.py."""
+    if shutil.which("hap.py") is None:
+        raise FileNotFoundError(
+            "Evaluation tool 'hap.py' not found in PATH. "
+            "Please install hap.py or add it to PATH."
+        )
     cmd = [
         "hap.py",
         truth_vcf,
