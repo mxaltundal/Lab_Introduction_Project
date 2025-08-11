@@ -6,8 +6,9 @@ channels:
 dependencies:
   - python=3.10
   - pip
-  - gatk4
-  - deepvariant
-  - 'hap.py'
-  - pandas
-  - matplotlib
+  - hap.py=0.3.14
+  - pandas=1.5
+  - matplotlib=3.7
+  - gatk4=4.3.0.0
+  - deepvariant=1.5.0
+  - pytest
