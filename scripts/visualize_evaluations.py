@@ -2,6 +2,8 @@
 """Visualize hap.py evaluation metrics."""
 
 import argparse
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def main() -> None:
@@ -18,11 +20,17 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    import pandas as pd
-    import matplotlib.pyplot as plt
-
     summary_file = f"{args.prefix}.summary.csv"
     df = pd.read_csv(summary_file)
+
+    required_columns = {"Type", "Recall", "Precision", "F1_Score"}
+    missing = required_columns.difference(df.columns)
+    if missing:
+        raise ValueError(
+            "Summary file {} is missing required column(s): {}".format(
+                summary_file, ", ".join(sorted(missing))
+            )
+        )
 
     metrics = df[df["Type"].isin(["SNP", "INDEL"])]
     plot_df = metrics[["Type", "Recall", "Precision", "F1_Score"]].set_index("Type")
