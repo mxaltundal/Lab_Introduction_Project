@@ -8,3 +8,6 @@ dependencies:
   - pip
   - gatk4
   - deepvariant
+  - 'hap.py'
+  - pandas
+  - matplotlib
