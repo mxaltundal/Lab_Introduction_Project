@@ -13,14 +13,28 @@ Example::
         --outdir results
 """
 import argparse
+import logging
 import os
 import subprocess
 from typing import List
 
 def run(cmd: List[str]) -> None:
-    """Run a command and stream output."""
-    print("[run]", " ".join(cmd))
-    subprocess.run(cmd, check=True)
+    """Run a command and log output."""
+    logging.info("[run] %s", " ".join(cmd))
+    try:
+        result = subprocess.run(
+            cmd,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        if result.stdout:
+            logging.debug(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logging.error("Command failed with return code %s", e.returncode)
+        if e.stderr:
+            logging.error(e.stderr)
+        raise
 
 def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
     """Run DeepVariant and return the path to the output VCF."""
@@ -58,7 +72,18 @@ def main() -> None:
     parser.add_argument("--truth-vcf", default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz", help="Benchmark VCF")
     parser.add_argument("--truth-bed", default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.bed", help="Benchmark BED")
     parser.add_argument("-o", "--outdir", default="results", help="Output directory")
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level",
+    )
     args = parser.parse_args()
+
+    logging.basicConfig(
+        level=getattr(logging, args.log_level.upper()),
+        format="%(levelname)s: %(message)s",
+    )
 
     os.makedirs(args.outdir, exist_ok=True)
     query_vcf = run_deepvariant(args.bam, args.ref, args.outdir)

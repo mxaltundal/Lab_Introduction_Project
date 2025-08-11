@@ -23,7 +23,7 @@ This project aims to reproduce and evaluate variant calling pipelines (e.g., Dee
 Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
 
 ```bash
-python scripts/download_hg002_giab.py --outdir data
+python scripts/download_hg002_giab.py --outdir data --log-level INFO
 ```
 
 This will create a `data` directory containing the HG002 benchmark files required for evaluation.
@@ -34,10 +34,13 @@ This will create a `data` directory containing the HG002 benchmark files require
 Use the `download_hg002_giab.py` script to fetch the benchmark VCF and BED files:
 
 ```bash
-python scripts/download_hg002_giab.py --outdir data
+python scripts/download_hg002_giab.py --outdir data --log-level INFO
 ```
 
 This will create a `data` directory containing the HG002 benchmark files required for evaluation.
+
+Use the `--log-level` argument with either script to control logging verbosity
+(e.g., `--log-level DEBUG`).
 
 ### Setting up the conda environment
 
@@ -60,7 +63,8 @@ them to the GIAB benchmark set using `hap.py`:
 python scripts/run_evaluation_pipeline.py \
   --bam path/to/aligned.bam \
   --ref path/to/reference.fasta \
-  --outdir results
+  --outdir results \
+  --log-level INFO
 ```
 
 This will produce a `results` directory containing the DeepVariant VCF and

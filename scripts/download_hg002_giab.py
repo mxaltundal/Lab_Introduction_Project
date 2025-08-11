@@ -11,6 +11,7 @@ Usage::
 
 """
 import argparse
+import logging
 import os
 from urllib.request import urlretrieve
 from urllib.parse import urljoin
@@ -30,10 +31,10 @@ def download_file(filename: str, outdir: str) -> None:
     os.makedirs(outdir, exist_ok=True)
     dest = os.path.join(outdir, filename)
     if os.path.exists(dest):
-        print(f"[skip] {filename} already exists")
+        logging.info("[skip] %s already exists", filename)
         return
     url = urljoin(BASE_URL, filename)
-    print(f"[download] {url} -> {dest}")
+    logging.info("[download] %s -> %s", url, dest)
     urlretrieve(url, dest)
 
 def main() -> None:
@@ -44,7 +45,18 @@ def main() -> None:
         default="data",
         help="Output directory for downloaded files",
     )
+    parser.add_argument(
+        "--log-level",
+        default="INFO",
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        help="Set the logging level",
+    )
     args = parser.parse_args()
+
+    logging.basicConfig(
+        level=getattr(logging, args.log_level.upper()),
+        format="%(levelname)s: %(message)s",
+    )
 
     for fname in FILES:
         download_file(fname, args.outdir)
