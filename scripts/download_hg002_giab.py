@@ -12,6 +12,7 @@ Usage::
 """
 import argparse
 import logging
+import hashlib
 import os
 from urllib.request import urlretrieve
 from urllib.parse import urljoin
