@@ -64,10 +64,10 @@ def download_file(file_info: dict, outdir: str) -> None:
     urlretrieve(url, dest)
     md5_sum, sha256_sum = _compute_checksums(dest)
     if md5_sum != expected_md5 or sha256_sum != expected_sha256:
-        print(f"[error] Checksum mismatch for {filename}; deleting file")
+        logging.error("[error] Checksum mismatch for %s; deleting file", filename)
         os.remove(dest)
     else:
-        print(f"[verified] {filename}")
+        logging.info("[verified] %s", filename)
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Download HG002 GIAB data")
