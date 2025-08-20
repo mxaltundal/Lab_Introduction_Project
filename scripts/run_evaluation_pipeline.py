@@ -18,7 +18,6 @@ import logging
 import os
 import shutil
 import subprocess
-import shutil
 from typing import List
 
 REQUIRED_TOOLS = ["run_deepvariant", "hap.py"]
@@ -117,23 +116,24 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Run variant calling and evaluation")
     parser.add_argument("--bam", required=True, help="Input aligned BAM/CRAM file")
     parser.add_argument("--ref", required=True, help="Reference FASTA")
-    parser.add_argument("--truth-vcf", default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz", help="Benchmark VCF")
-    parser.add_argument("--truth-bed", default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.bed", help="Benchmark BED")
+    parser.add_argument(
+        "--truth-vcf",
+        default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.vcf.gz",
+        help="Benchmark VCF",
+    )
+    parser.add_argument(
+        "--truth-bed",
+        default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.bed",
+        help="Benchmark BED",
+    )
     parser.add_argument("-o", "--outdir", default="results", help="Output directory")
     parser.add_argument(
-      
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level",
     )
-    args = parser.parse_args()
-
-    logging.basicConfig(
-        level=getattr(logging, args.log_level.upper()),
-        format="%(levelname)s: %(message)s",
-    )
-                                            
+    parser.add_argument(
         "--caller",
         choices=["deepvariant", "gatk"],
         default="deepvariant",
@@ -141,6 +141,12 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    logging.basicConfig(
+        level=getattr(logging, args.log_level.upper()),
+        format="%(levelname)s: %(message)s",
+    )
+
+    check_required_tools()
     for path, desc in [
         (args.bam, "BAM/CRAM file"),
         (args.ref, "reference FASTA"),
@@ -150,9 +156,6 @@ def main() -> None:
         if not os.path.exists(path):
             raise FileNotFoundError(f"Missing {desc}: {path}")
 
-    for exe in ["run_deepvariant", "hap.py"]:
-        if shutil.which(exe) is None:
-            raise SystemExit(f"Required executable '{exe}' not found in PATH")
 
     os.makedirs(args.outdir, exist_ok=True)
     
