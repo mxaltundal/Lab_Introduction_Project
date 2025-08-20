@@ -42,8 +42,8 @@ The environment installs **DeepVariant** from Bioconda.
 ### Running the evaluation pipeline
 
 After downloading the HG002 truth data and creating the environment,
-run the pipeline to generate variant calls with DeepVariant and compare
-them to the GIAB benchmark set using `hap.py`:
+run the pipeline to generate variant calls and compare them to the GIAB
+benchmark set using `hap.py`. DeepVariant is used by default:
 
 ```bash
 python scripts/run_evaluation_pipeline.py \
@@ -52,6 +52,8 @@ python scripts/run_evaluation_pipeline.py \
   --outdir results
 ```
 
+
+To run GATK instead, specify the caller:
 This will produce a `results` directory containing the DeepVariant VCF and
 evaluation metrics from `hap.py`.
 ### Visualizing hap.py evaluation results
