@@ -16,6 +16,7 @@ import hashlib
 import os
 from urllib.request import urlretrieve
 from urllib.parse import urljoin
+from typing import Union
 
 BASE_URL = (
     "https://ftp.ncbi.nlm.nih.gov/giab/ftp/release/"
