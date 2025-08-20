@@ -43,9 +43,7 @@ def run(cmd: List[str]) -> None:
     if result.returncode != 0:
         if result.stderr:
             print(result.stderr)
-        raise subprocess.CalledProcessError(
-            result.returncode, cmd, output=result.stdout, stderr=result.stderr
-        )
+        raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr)
 
 def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
     """Run DeepVariant and return the path to the output VCF."""
