@@ -12,9 +12,12 @@ Usage::
 """
 import argparse
 import logging
+import hashlib
 import os
+import hashlib
 from urllib.request import urlretrieve
 from urllib.parse import urljoin
+from typing import Union
 
 BASE_URL = (
     "https://ftp.ncbi.nlm.nih.gov/giab/ftp/release/"
@@ -49,19 +52,24 @@ def _compute_checksums(path: str) -> tuple[str, str]:
     return md5.hexdigest(), sha256.hexdigest()
 
 
-def download_file(file_info: dict, outdir: str) -> None:
+def download_file(file_info: Union[dict, str], outdir: str) -> None:
     """Download a single file from GIAB if it does not already exist."""
-    filename = file_info["name"]
-    expected_md5 = file_info["md5"]
-    expected_sha256 = file_info["sha256"]
+    if isinstance(file_info, dict):
+        filename = file_info["name"]
+        expected_md5 = file_info["md5"]
+        expected_sha256 = file_info["sha256"]
+    else:
+        filename = file_info
+        expected_md5 = expected_sha256 = None
     os.makedirs(outdir, exist_ok=True)
     dest = os.path.join(outdir, filename)
     if os.path.exists(dest):
-        logging.info("[skip] %s already exists", filename)
+        print(f"[skip] {filename} already exists")
         return
     url = urljoin(BASE_URL, filename)
     logging.info("[download] %s -> %s", url, dest)
     urlretrieve(url, dest)
+
     md5_sum, sha256_sum = _compute_checksums(dest)
     if md5_sum != expected_md5 or sha256_sum != expected_sha256:
         logging.error("[error] Checksum mismatch for %s; deleting file", filename)
