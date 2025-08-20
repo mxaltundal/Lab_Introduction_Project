@@ -43,7 +43,9 @@ def run(cmd: List[str]) -> None:
     if result.returncode != 0:
         if result.stderr:
             print(result.stderr)
-        raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr
+        raise subprocess.CalledProcessError(
+            result.returncode, cmd, output=result.stdout, stderr=result.stderr
+        )
 
 def run_deepvariant(bam: str, ref: str, out_dir: str) -> str:
     """Run DeepVariant and return the path to the output VCF."""
@@ -120,11 +122,17 @@ def main() -> None:
     parser.add_argument("--truth-bed", default="data/HG002_GRCh38_1_22_v4.2.1_benchmark.bed", help="Benchmark BED")
     parser.add_argument("-o", "--outdir", default="results", help="Output directory")
     parser.add_argument(
-      
+
         "--log-level",
         default="INFO",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         help="Set the logging level",
+    )
+    parser.add_argument(
+        "--caller",
+        choices=["deepvariant", "gatk"],
+        default="deepvariant",
+        help="Variant caller to use",
     )
     args = parser.parse_args()
 
@@ -132,13 +140,6 @@ def main() -> None:
         level=getattr(logging, args.log_level.upper()),
         format="%(levelname)s: %(message)s",
     )
-                                            
-        "--caller",
-        choices=["deepvariant", "gatk"],
-        default="deepvariant",
-        help="Variant caller to use",
-    )
-    args = parser.parse_args()
 
     for path, desc in [
         (args.bam, "BAM/CRAM file"),
