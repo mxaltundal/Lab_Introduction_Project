@@ -18,7 +18,6 @@ import logging
 import os
 import shutil
 import subprocess
-import shutil
 from typing import List
 
 REQUIRED_TOOLS = ["run_deepvariant", "hap.py"]
