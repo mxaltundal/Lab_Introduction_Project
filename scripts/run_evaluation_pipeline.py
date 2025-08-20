@@ -149,7 +149,6 @@ def main() -> None:
     )
 
     check_required_tools()
-
     for path, desc in [
         (args.bam, "BAM/CRAM file"),
         (args.ref, "reference FASTA"),
