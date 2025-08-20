@@ -5,7 +5,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1] / "scripts"))
 import download_hg002_giab as dl
 
 
-def test_download_file_skips_existing(tmp_path, monkeypatch, capsys):
+def test_download_file_skips_existing(tmp_path, monkeypatch, caplog):
     filename = "dummy.txt"
     dest = tmp_path / filename
     dest.write_text("existing")
@@ -15,6 +15,7 @@ def test_download_file_skips_existing(tmp_path, monkeypatch, capsys):
 
     monkeypatch.setattr(dl, "urlretrieve", fake_urlretrieve)
 
-    dl.download_file(filename, str(tmp_path))
-    captured = capsys.readouterr().out
-    assert "[skip]" in captured
+    file_info = {"name": filename, "md5": "", "sha256": ""}
+    with caplog.at_level("INFO"):
+        dl.download_file(file_info, str(tmp_path))
+    assert "[skip]" in caplog.text
